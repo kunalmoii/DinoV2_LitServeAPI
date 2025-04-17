@@ -1,0 +1,8 @@
+torch==2.1.2
+torchvision
+transformers
+scikit-learn
+Pillow
+lightning
+fastapi
+uvicorn

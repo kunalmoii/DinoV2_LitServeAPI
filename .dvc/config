@@ -1,0 +1,5 @@
+[core]
+    remote = remote-storage
+    autostage = true
+['remote "remote-storage"']
+    url = gs://data-labelling-platform_cloudbuild
