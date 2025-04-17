@@ -6,3 +6,4 @@ Pillow
 lightning
 fastapi
 uvicorn
+opencv-python

@@ -8,9 +8,11 @@ import litserve as ls
 import io
 import base64
 import os
+import numpy as np
+import cv2
+import json
 
 
-# === Define the classifier (same as your model.py) ===
 class DinoClassifier(nn.Module):
     def __init__(self, backbone, num_classes):
         super().__init__()
@@ -22,25 +24,16 @@ class DinoClassifier(nn.Module):
         return self.classifier(features)
 
 
-# === Define LitServe API ===
 class DinoLitAPI(ls.LitAPI):
     def setup(self, device):
+        # Load processor & backbone
+        self.device = device
         self.processor = AutoImageProcessor.from_pretrained("facebook/dinov2-base")
         backbone = AutoModel.from_pretrained("facebook/dinov2-base")
-        self.model = DinoClassifier(backbone, num_classes=3)
-        self.model.to(device)
 
-        # Load model weights
-        model_path = "checkpoints/best_model.pth"
-        if os.path.exists(model_path):
-            self.model.load_state_dict(torch.load(model_path, map_location=device))
-            print("✅ Model weights loaded.")
-
-        # Set class names
-        self.class_names = sorted(["EMPTY", "Object", "Occlusion"])
+        # Load class info & classifier
+        self.class_names = sorted(["Empty", "Object", "Occlusion"])
         num_classes = len(self.class_names)
-
-        # Load the trained classifier
         self.model = DinoClassifier(backbone, num_classes)
         self.model.load_state_dict(
             torch.load("checkpoints/best_model.pth", map_location=device)
@@ -48,7 +41,10 @@ class DinoLitAPI(ls.LitAPI):
         self.model.to(device)
         self.model.eval()
 
-        # Define transform
+        # Load bay coordinates once
+        with open("utils/bay_coordinates.json", "r") as f:
+            self.bay_coordinates = json.load(f)
+
         self.transform = transforms.Compose(
             [
                 transforms.Resize((224, 224)),
@@ -62,29 +58,76 @@ class DinoLitAPI(ls.LitAPI):
     def decode_request(self, request):
         image_bytes = base64.b64decode(request["image"])
         image = Image.open(io.BytesIO(image_bytes)).convert("RGB")
-        image_tensor = self.processor(image, return_tensors="pt")["pixel_values"]
-        return image_tensor
+        self.original_image = np.array(image)
+        return self.original_image
 
+    def predict(self, image_np: np.ndarray):
+        return self._predict_per_bay(image_np, self.bay_coordinates)
 
-    def predict(self, x):
-        device = next(self.model.parameters()).device
-        x = x.to(device)
+    def _predict_per_bay(self, image: np.ndarray, bay_coordinates: dict):
+        h, w = image.shape[:2]
+        print(h, w)
+        results = []
+        original_size = (1920, 1080)
 
-        with torch.no_grad():
-            outputs = self.model(x)
-            probs = torch.softmax(outputs, dim=1)
-            confidence, pred_idx = torch.max(probs, dim=1)
+        image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
 
-        class_name = self.class_names[pred_idx.item()]
-        confidence_score = round(confidence.item(), 4)  # rounded for readability
+        # # Scaling factors
+        x_scale = w / original_size[0]
+        y_scale = h / original_size[1]
 
-        return {"prediction": class_name, "confidence": confidence_score}
+        for bay_name, coords in bay_coordinates.items():
+            if not coords:
+                continue
+
+            # Ensure closed polygon
+            if coords[0] != coords[-1]:
+                coords.append(coords[0])
+
+            scaled_coords = [[int(x * x_scale), int(y * y_scale)] for x, y in coords]
+            polygon = np.array(scaled_coords, dtype=np.int32)
+            mask = np.zeros((h, w), dtype=np.uint8)
+            cv2.fillPoly(mask, [polygon], 255)
+
+            masked = cv2.bitwise_and(image, image, mask=mask)
+            x, y, box_w, box_h = cv2.boundingRect(polygon)
+            x_end, y_end = min(x + box_w, w), min(y + box_h, h)
+
+            if x >= w or y >= h or x_end <= x or y_end <= y:
+                print(f"⚠️ Skipping invalid crop for {bay_name}")
+                continue
+
+            crop = masked[y:y_end, x:x_end]
+
+            if crop.size == 0:
+                continue
+
+            # Inference
+            pil_crop = Image.fromarray(cv2.cvtColor(crop, cv2.COLOR_BGR2RGB))
+            # Save the image to disk
+            os.makedirs("crop", exist_ok=True)
+            pil_crop.save(f"crop/{bay_name}.jpg")
+            image_tensor = self.transform(pil_crop).unsqueeze(0).to(self.device)
+
+            with torch.no_grad():
+                outputs = self.model(image_tensor)
+                probs = torch.softmax(outputs, dim=1)
+                confidence, pred_idx = torch.max(probs, dim=1)
+
+            results.append(
+                {
+                    "bay": bay_name,
+                    "prediction": self.class_names[pred_idx.item()],
+                    "confidence": round(confidence.item(), 4),
+                }
+            )
+
+        return results
 
     def encode_response(self, output):
         return output
 
 
-# === Run the LitServe Server ===
 if __name__ == "__main__":
     server = ls.LitServer(DinoLitAPI(), accelerator="auto", max_batch_size=1)
     server.run(port=8000)
