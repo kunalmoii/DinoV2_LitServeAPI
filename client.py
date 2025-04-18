@@ -3,7 +3,7 @@ import requests
 import json
 
 # Define the server URL
-SERVER_URL = "http://localhost:8000/predict"
+SERVER_URL = "http://0.0.0.0:8000/predict"
 
 
 def predict_image(

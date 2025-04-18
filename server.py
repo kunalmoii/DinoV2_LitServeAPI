@@ -72,9 +72,11 @@ class DinoLitAPI(ls.LitAPI):
 
         image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
 
-        # # Scaling factors
         x_scale = w / original_size[0]
         y_scale = h / original_size[1]
+
+        image_tensors = []
+        bay_names = []
 
         for bay_name, coords in bay_coordinates.items():
             if not coords:
@@ -102,23 +104,30 @@ class DinoLitAPI(ls.LitAPI):
             if crop.size == 0:
                 continue
 
-            # Inference
             pil_crop = Image.fromarray(cv2.cvtColor(crop, cv2.COLOR_BGR2RGB))
-            # Save the image to disk
             os.makedirs("crop", exist_ok=True)
             pil_crop.save(f"crop/{bay_name}.jpg")
-            image_tensor = self.transform(pil_crop).unsqueeze(0).to(self.device)
 
-            with torch.no_grad():
-                outputs = self.model(image_tensor)
-                probs = torch.softmax(outputs, dim=1)
-                confidence, pred_idx = torch.max(probs, dim=1)
+            image_tensor = self.transform(pil_crop).unsqueeze(0)
+            image_tensors.append(image_tensor)
+            bay_names.append(bay_name)
 
+        if not image_tensors:
+            return results
+
+        # Run batched inference
+        batch = torch.cat(image_tensors).to(self.device)
+        with torch.no_grad():
+            outputs = self.model(batch)
+            probs = torch.softmax(outputs, dim=1)
+            confidences, pred_indices = torch.max(probs, dim=1)
+
+        for i, bay_name in enumerate(bay_names):
             results.append(
                 {
                     "bay": bay_name,
-                    "prediction": self.class_names[pred_idx.item()],
-                    "confidence": round(confidence.item(), 4),
+                    "prediction": self.class_names[pred_indices[i].item()],
+                    "confidence": round(confidences[i].item(), 4),
                 }
             )
 

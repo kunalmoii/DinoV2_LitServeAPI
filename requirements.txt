@@ -1,9 +1,13 @@
-torch==2.1.2
-torchvision
-transformers
-scikit-learn
-Pillow
-lightning
-fastapi
-uvicorn
-opencv-python
+torch==2.2.0+cu121
+torchvision==0.17.0+cu121
+numpy==1.26.4
+transformers==4.39.3
+scikit-learn==1.4.2
+Pillow==10.3.0
+lightning==2.2.1
+fastapi==0.110.2
+uvicorn==0.29.0
+opencv-python==4.9.0.80
+litserve==0.2.7
+# Required for installing +cu121 versions
+-f https://download.pytorch.org/whl/torch_stable.html
