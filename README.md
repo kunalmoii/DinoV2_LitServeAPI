@@ -7,6 +7,17 @@ export GOOGLE_APPLICATION_CREDENTIALS='credentials/gcp_key.json'
 dvc pull required_name.dvc
 ```
 
-
+To Build Docker:
+```bash
 docker build -t dinov2-litserve .
-docker run --gpus all -p 8000:8000 dinov2-litserve
+docker run -p 8000:8000 dinov2-litserve
+```
+
+To Push Docker:
+```bash
+docker tag dinov2-litserve us-central1-docker.pkg.dev/moii-api-analytics/execanalytics/vertical_market:v0.0.1
+gcloud auth configure-docker
+gcloud auth print-access-token | docker login -u oauth2accesstoken --password-stdin https://us-central1-docker.pkg.dev
+docker push us-central1-docker.pkg.dev/moii-api-analytics/execanalytics/vertical_market:v0.0.1
+```
+

@@ -2,7 +2,7 @@
     {
         "bay": "Bay_1",
         "prediction": "Object",
-        "confidence": 0.8104
+        "confidence": 0.7911
     },
     {
         "bay": "Bay_2",
@@ -22,17 +22,17 @@
     {
         "bay": "Bay_5",
         "prediction": "Empty",
-        "confidence": 0.9148
+        "confidence": 0.8281
     },
     {
         "bay": "Bay_6",
         "prediction": "Occlusion",
-        "confidence": 0.5078
+        "confidence": 0.5304
     },
     {
         "bay": "Bay_7",
         "prediction": "Occlusion",
-        "confidence": 0.5759
+        "confidence": 0.611
     },
     {
         "bay": "Bay_8",
@@ -47,56 +47,56 @@
     {
         "bay": "Bay_10",
         "prediction": "Occlusion",
-        "confidence": 0.3861
+        "confidence": 0.3965
     },
     {
         "bay": "Bay_11",
         "prediction": "Empty",
-        "confidence": 0.9539
+        "confidence": 0.952
     },
     {
         "bay": "Bay_12",
         "prediction": "Empty",
-        "confidence": 0.9685
+        "confidence": 0.9667
     },
     {
         "bay": "Bay_13",
         "prediction": "Empty",
-        "confidence": 0.7824
+        "confidence": 0.7721
     },
     {
         "bay": "Bay_14",
         "prediction": "Empty",
-        "confidence": 0.9934
+        "confidence": 0.9933
     },
     {
         "bay": "Bay_15",
         "prediction": "Object",
-        "confidence": 0.9287
+        "confidence": 0.9349
     },
     {
         "bay": "Bay_16",
         "prediction": "Empty",
-        "confidence": 0.979
+        "confidence": 0.9793
     },
     {
         "bay": "Bay_17",
         "prediction": "Empty",
-        "confidence": 0.9771
+        "confidence": 0.9774
     },
     {
         "bay": "Bay_18",
         "prediction": "Empty",
-        "confidence": 0.9765
+        "confidence": 0.9758
     },
     {
         "bay": "Bay_19",
         "prediction": "Object",
-        "confidence": 0.9961
+        "confidence": 0.9952
     },
     {
         "bay": "Bay_20",
         "prediction": "Object",
-        "confidence": 0.9989
+        "confidence": 0.999
     }
 ]
