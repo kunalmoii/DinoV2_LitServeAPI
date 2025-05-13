@@ -2,12 +2,12 @@
     {
         "bay": "Bay_1",
         "prediction": "Object",
-        "confidence": 0.8104
+        "confidence": 0.8204
     },
     {
         "bay": "Bay_2",
         "prediction": "Object",
-        "confidence": 1.0
+        "confidence": 0.8475
     },
     {
         "bay": "Bay_3",
@@ -17,186 +17,86 @@
     {
         "bay": "Bay_4",
         "prediction": "Object",
-        "confidence": 0.9993
+        "confidence": 0.999
     },
     {
         "bay": "Bay_5",
-        "prediction": "Empty",
-        "confidence": 0.9148
+        "prediction": "Object",
+        "confidence": 0.8116
     },
     {
         "bay": "Bay_6",
-        "prediction": "Occlusion",
-        "confidence": 0.5078
+        "prediction": "Empty",
+        "confidence": 0.8659
     },
     {
         "bay": "Bay_7",
-        "prediction": "Occlusion",
-        "confidence": 0.5759
+        "prediction": "Empty",
+        "confidence": 0.8047
     },
     {
         "bay": "Bay_8",
         "prediction": "Object",
-        "confidence": 0.9995
+        "confidence": 0.9878
     },
     {
         "bay": "Bay_9",
         "prediction": "Object",
-        "confidence": 0.9991
+        "confidence": 0.9992
     },
     {
         "bay": "Bay_10",
-        "prediction": "Occlusion",
-        "confidence": 0.3861
+        "prediction": "Empty",
+        "confidence": 0.4663
     },
     {
         "bay": "Bay_11",
         "prediction": "Empty",
-        "confidence": 0.9539
+        "confidence": 0.9393
     },
     {
         "bay": "Bay_12",
         "prediction": "Empty",
-        "confidence": 0.9685
+        "confidence": 0.9778
     },
     {
         "bay": "Bay_13",
         "prediction": "Empty",
-        "confidence": 0.7824
+        "confidence": 0.9952
     },
     {
         "bay": "Bay_14",
         "prediction": "Empty",
-        "confidence": 0.9934
+        "confidence": 0.9856
     },
     {
         "bay": "Bay_15",
         "prediction": "Object",
-        "confidence": 0.9287
+        "confidence": 0.9039
     },
     {
         "bay": "Bay_16",
         "prediction": "Empty",
-        "confidence": 0.979
+        "confidence": 0.9223
     },
     {
         "bay": "Bay_17",
         "prediction": "Empty",
-        "confidence": 0.9771
+        "confidence": 0.8422
     },
     {
         "bay": "Bay_18",
         "prediction": "Empty",
-        "confidence": 0.9765
+        "confidence": 0.9886
     },
     {
         "bay": "Bay_19",
         "prediction": "Object",
-        "confidence": 0.9961
+        "confidence": 0.9853
     },
     {
         "bay": "Bay_20",
         "prediction": "Object",
-        "confidence": 0.9989
-    },
-    {
-        "bay": "Bay_21",
-        "prediction": "Occlusion",
-        "confidence": 0.8874
-    },
-    {
-        "bay": "Bay_22",
-        "prediction": "Object",
-        "confidence": 0.9994
-    },
-    {
-        "bay": "Bay_23",
-        "prediction": "Empty",
-        "confidence": 0.8972
-    },
-    {
-        "bay": "Bay_24",
-        "prediction": "Object",
-        "confidence": 0.9988
-    },
-    {
-        "bay": "Bay_25",
-        "prediction": "Object",
-        "confidence": 0.7741
-    },
-    {
-        "bay": "Bay_26",
-        "prediction": "Object",
-        "confidence": 0.9986
-    },
-    {
-        "bay": "Bay_27",
-        "prediction": "Object",
-        "confidence": 0.9993
-    },
-    {
-        "bay": "Bay_28",
-        "prediction": "Object",
-        "confidence": 0.9943
-    },
-    {
-        "bay": "Bay_29",
-        "prediction": "Object",
-        "confidence": 0.9924
-    },
-    {
-        "bay": "Bay_30",
-        "prediction": "Object",
-        "confidence": 0.9989
-    },
-    {
-        "bay": "Bay_31",
-        "prediction": "Object",
-        "confidence": 0.9992
-    },
-    {
-        "bay": "Bay_32",
-        "prediction": "Empty",
-        "confidence": 0.6376
-    },
-    {
-        "bay": "Bay_33",
-        "prediction": "Object",
-        "confidence": 0.9405
-    },
-    {
-        "bay": "Bay_34",
-        "prediction": "Object",
-        "confidence": 0.999
-    },
-    {
-        "bay": "Bay_35",
-        "prediction": "Object",
-        "confidence": 0.7353
-    },
-    {
-        "bay": "Bay_36",
-        "prediction": "Object",
-        "confidence": 1.0
-    },
-    {
-        "bay": "Bay_37",
-        "prediction": "Object",
-        "confidence": 0.9989
-    },
-    {
-        "bay": "Bay_38",
-        "prediction": "Object",
-        "confidence": 0.9893
-    },
-    {
-        "bay": "Bay_39",
-        "prediction": "Object",
-        "confidence": 0.9492
-    },
-    {
-        "bay": "Bay_40",
-        "prediction": "Object",
-        "confidence": 0.6989
+        "confidence": 0.9979
     }
 ]

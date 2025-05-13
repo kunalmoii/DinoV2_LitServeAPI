@@ -105,8 +105,8 @@ class DinoLitAPI(ls.LitAPI):
                 continue
 
             pil_crop = Image.fromarray(cv2.cvtColor(crop, cv2.COLOR_BGR2RGB))
-            # os.makedirs("crop", exist_ok=True)
-            # pil_crop.save(f"crop/{bay_name}.jpg")
+            os.makedirs("crop", exist_ok=True)
+            pil_crop.save(f"crop/{bay_name}.jpg")
 
             image_tensor = self.transform(pil_crop).unsqueeze(0)
             image_tensors.append(image_tensor)
