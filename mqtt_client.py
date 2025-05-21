@@ -8,7 +8,7 @@ TOPIC = "bay/predictions"
 USERNAME = "dms_mqtt"
 PASSWORD = "*kk9t@RI!9RaTN"
 USE_TLS = True
-CA_CERTS = "emqxsl-ca.crt"  # <-- Update this path to your CA cert file
+CA_CERTS = "emqxsl-ca.crt"
 
 
 class BayMQTTPublisher:
@@ -23,6 +23,7 @@ class BayMQTTPublisher:
         ca_certs=CA_CERTS,
     ):
         self.topic = topic
+        random.seed(0)
         client_id = f"bay-mqtt-{random.randint(0, 10000)}"
         self.client = mqtt.Client(client_id)
         if username and password:
@@ -52,11 +53,41 @@ class BayMQTTPublisher:
 
     def publish_bay_results(self, bay_results):
         """
-        bay_results: list of dicts, e.g.
+        Publishes the processed bay detection results to the MQTT topic.
+
+        The input `bay_results` is a list of dictionaries, where each dictionary
+        represents a bay and its initial prediction and confidence.
+        Example input `bay_results`:
         [
-            {"bay": "A1", "prediction": "Empty", "confidence": 0.98},
-            ...
+            {"bay": "A1", "prediction": "Empty", "confidence": 0.98, "image_path": "/path/to/image_A1.jpg"},
+            {"bay": "B2", "prediction": "Object", "confidence": 0.995, "image_path": "/path/to/image_B2.jpg"}
         ]
+
+        This method processes each result using `_process_prediction` to potentially
+        adjust the prediction and confidence based on predefined thresholds.
+        For example, an "Object" with confidence < 0.99 might be changed to "Empty"
+        with confidence 1.0.
+
+        The final output published to the MQTT topic is a JSON string representing
+        a list of these processed results. Each item in the list will be a dictionary
+        containing the bay identifier, the final prediction, the final confidence,
+        and the original image path.
+
+        Example JSON payload published to the topic:
+        '[
+            {"bay": "A1", "prediction": "Empty", "confidence": 0.98, "image_path": "/path/to/image_A1.jpg"},
+            {"bay": "B2", "prediction": "Object", "confidence": 0.995, "image_path": "/path/to/image_B2.jpg"}
+        ]'
+        If a prediction was changed by `_process_prediction`, it would look like:
+        '[
+            {"bay": "C3", "prediction": "Empty", "confidence": 1.0, "image_path": "/path/to/image_C3.jpg"}
+        ]'
+        (Assuming C3 was initially "Object" with confidence 0.9)
+
+        Args:
+            bay_results (list): A list of dictionaries, where each dictionary
+                                contains 'bay' (str), 'prediction' (str),
+                                'confidence' (float), and 'image_path' (str).
         """
         cleaned_results = []
         for result in bay_results:
