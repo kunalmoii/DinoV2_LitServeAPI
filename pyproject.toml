@@ -1,0 +1,25 @@
+[tool.poetry]
+name = "dinov2-litserveapi"
+version = "0.1.0"
+description = ""
+authors = ["Lakshman <lakshman@moiiai.com>"]
+readme = "README.md"
+package-mode = false
+
+[tool.poetry.dependencies]
+python = "^3.12"
+torch = "2.2.0"
+torchvision = "0.17.0"
+numpy = "1.26.4"
+transformers = "4.39.3"
+scikit-learn = "1.4.2"
+Pillow = "10.3.0"
+lightning = "2.2.1"
+fastapi = "0.110.2"
+uvicorn = "0.29.0"
+opencv-python = "4.9.0.80"
+litserve = "0.2.7"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

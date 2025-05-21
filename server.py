@@ -11,6 +11,7 @@ import os
 import numpy as np
 import cv2
 import json
+from mqtt_client import BayMQTTPublisher
 
 
 class DinoClassifier(nn.Module):
@@ -55,6 +56,8 @@ class DinoLitAPI(ls.LitAPI):
             ]
         )
 
+        self.mqtt_publisher = BayMQTTPublisher()
+
     def decode_request(self, request):
         image_bytes = base64.b64decode(request["image"])
         image = Image.open(io.BytesIO(image_bytes)).convert("RGB")
@@ -62,7 +65,10 @@ class DinoLitAPI(ls.LitAPI):
         return self.original_image
 
     def predict(self, image_np: np.ndarray):
-        return self._predict_per_bay(image_np, self.bay_coordinates)
+        results = self._predict_per_bay(image_np, self.bay_coordinates)
+        # Publish results to MQTT
+        self.mqtt_publisher.publish_bay_results(results)
+        return results
 
     def _predict_per_bay(self, image: np.ndarray, bay_coordinates: dict):
         h, w = image.shape[:2]

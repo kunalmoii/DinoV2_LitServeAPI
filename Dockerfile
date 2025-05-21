@@ -1,6 +1,3 @@
-# Use an official Python runtime
-FROM python:3.12-slim
-
 # Use NVIDIA PyTorch image with Python 3.12 and CUDA 12.1
 FROM pytorch/pytorch:2.2.0-cuda12.1-cudnn8-runtime
 
