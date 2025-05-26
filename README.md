@@ -15,9 +15,9 @@ docker run -p 8000:8000 dinov2-litserve
 
 To Push Docker:
 ```bash
-docker tag dinov2-litserve-api us-central1-docker.pkg.dev/moii-api-analytics/execanalytics/vertical_market:v0.0.2
+docker tag dinov2-litserve-api us-central1-docker.pkg.dev/moii-api-analytics/execanalytics/vertical_market:v0.0.4
 gcloud auth configure-docker
-gcloud auth print-access-token | docker login -u oauth2accesstoken --password-stdin https://us-central1-docker.pkg.dev
-docker push us-central1-docker.pkg.dev/moii-api-analytics/execanalytics/vertical_market:v0.0.2
+gcloud auth print-access-token | sudo docker login -u oauth2accesstoken --password-stdin https://us-central1-docker.pkg.dev
+docker push us-central1-docker.pkg.dev/moii-api-analytics/execanalytics/vertical_market:v0.0.4
 ```
 
