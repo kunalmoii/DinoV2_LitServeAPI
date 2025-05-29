@@ -1,4 +1,5 @@
 import paho.mqtt.client as mqtt
+from paho.mqtt.client import CallbackAPIVersion
 import json
 import random
 
@@ -24,7 +25,7 @@ class BayMQTTPublisher:
         self.topic = topic
         random.seed(0)
         client_id = f"bay-mqtt-{random.randint(0, 10000)}"
-        self.client = mqtt.Client(client_id=client_id)
+        self.client = mqtt.Client(CallbackAPIVersion.VERSION1, client_id)
         if username and password:
             self.client.username_pw_set(username, password)
         if use_tls and ca_certs:

@@ -32,8 +32,59 @@ class DinoLitAPI(ls.LitAPI):
     def setup(self, device):
         # Load processor & backbone
         self.device = device
-        self.processor = AutoImageProcessor.from_pretrained("facebook/dinov2-base")
-        backbone = AutoModel.from_pretrained("facebook/dinov2-base")
+
+        # Load processor with error handling
+        try:
+            self.processor = AutoImageProcessor.from_pretrained(
+                "models/dinov2-base", local_files_only=True
+            )
+        except Exception as e:
+            print(f"Failed to load processor from local files: {e}")
+            print("Attempting to download processor...")
+            self.processor = AutoImageProcessor.from_pretrained(
+                "facebook/dinov2-base", force_download=True
+            )
+
+        # Load backbone with error handling and validation
+        try:
+            # Check if model files exist and are valid
+            model_path = "models/dinov2-base"
+            if not os.path.exists(model_path):
+                raise FileNotFoundError(f"Model directory {model_path} not found")
+
+            # Check for safetensors file and validate size
+            safetensors_path = os.path.join(model_path, "model.safetensors")
+            if os.path.exists(safetensors_path):
+                file_size = os.path.getsize(safetensors_path)
+                print(f"Safetensors file size: {file_size / (1024**2):.2f} MB")
+                # If file is suspiciously small (< 10MB), it's likely corrupted
+                if file_size < 10 * 1024 * 1024:
+                    raise ValueError(
+                        f"Safetensors file appears corrupted (size: {file_size} bytes)"
+                    )
+
+            backbone = AutoModel.from_pretrained(
+                "models/dinov2-base", local_files_only=True
+            )
+            print("Successfully loaded backbone from local files")
+
+        except Exception as e:
+            print(f"Failed to load backbone from local files: {e}")
+            print("Attempting to download backbone model...")
+            try:
+                backbone = AutoModel.from_pretrained(
+                    "facebook/dinov2-base", force_download=True
+                )
+                print("Successfully downloaded and loaded backbone")
+                # Save the model locally for future use
+                os.makedirs("models/dinov2-base", exist_ok=True)
+                backbone.save_pretrained("models/dinov2-base")
+                print("Saved backbone model locally")
+            except Exception as download_error:
+                print(f"Failed to download backbone: {download_error}")
+                raise RuntimeError(
+                    "Unable to load backbone model from local files or download"
+                )
 
         # Load class info & classifier
         self.class_names = sorted(["Empty", "Object", "Occlusion"])
@@ -60,7 +111,11 @@ class DinoLitAPI(ls.LitAPI):
         )
 
         # Initialize MQTT publisher only if enabled
-        self.mqtt_enabled = os.getenv("ENABLE_MQTT", "false").lower() in ("true", "1", "yes")
+        self.mqtt_enabled = os.getenv("ENABLE_MQTT", "false").lower() in (
+            "true",
+            "1",
+            "yes",
+        )
         if self.mqtt_enabled:
             self.mqtt_publisher = BayMQTTPublisher()
         else:
